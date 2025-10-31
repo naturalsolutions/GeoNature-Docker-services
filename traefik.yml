@@ -10,12 +10,12 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
-      - "--entryPoints.web.http.redirections.entrypoint.to=:${HTTPS_PORT}"
-      - "--entryPoints.web.http.redirections.entrypoint.scheme=https"
-      - "--entryPoints.websecure.address=:443"
-      - "--certificatesResolvers.acme-resolver.acme.email=${ACME_EMAIL-test.test@test.com}"
-      - "--certificatesResolvers.acme-resolver.acme.storage=/etc/traefik/certs/acme.json"
-      - "--certificatesResolvers.acme-resolver.acme.tlsChallenge=true"
+      # - "--entryPoints.web.http.redirections.entrypoint.to=:${HTTPS_PORT}"
+      # - "--entryPoints.web.http.redirections.entrypoint.scheme=https"
+      # - "--entryPoints.websecure.address=:443"
+      # - "--certificatesResolvers.acme-resolver.acme.email=${ACME_EMAIL-test.test@test.com}"
+      # - "--certificatesResolvers.acme-resolver.acme.storage=/etc/traefik/certs/acme.json"
+      # - "--certificatesResolvers.acme-resolver.acme.tlsChallenge=true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/traefik:/etc/traefik/dynamic
@@ -42,8 +42,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.geonature-backend.rule=Host(`${GEONATURE_BACKEND_HOST}`) && PathPrefix(`${GEONATURE_BACKEND_PREFIX}`)"
-      - "traefik.http.routers.geonature-backend.entrypoints=websecure"
-      - "traefik.http.routers.geonature-backend.tls.certResolver=acme-resolver"
+      # - "traefik.http.routers.geonature-backend.entrypoints=websecure"
+      - "traefik.http.routers.geonature-backend.entrypoints=web"
+      # - "traefik.http.routers.geonature-backend.tls.certResolver=acme-resolver"
       - "traefik.http.services.geonature-backend.loadbalancer.server.port=8000"
     ports: !reset null
     networks:
@@ -55,8 +56,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.geonature.rule=Host(`${GEONATURE_FRONTEND_HOST}`) && PathPrefix(`${GEONATURE_FRONTEND_PREFIX}`)"
-      - "traefik.http.routers.geonature.entrypoints=websecure"
-      - "traefik.http.routers.geonature.tls.certResolver=acme-resolver"
+      # - "traefik.http.routers.geonature.entrypoints=websecure"
+      - "traefik.http.routers.geonature-frontend.entrypoints=web"
+      # - "traefik.http.routers.geonature.tls.certResolver=acme-resolver"
       - "traefik.http.services.geonature.loadbalancer.server.port=80"
     ports: !reset null
     networks:
@@ -66,8 +68,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.usershub.rule=Host(`${USERSHUB_HOST}`) && PathPrefix(`${USERSHUB_PREFIX}`)"
-      - "traefik.http.routers.usershub.entrypoints=websecure"
-      - "traefik.http.routers.usershub.tls.certResolver=acme-resolver"
+      # - "traefik.http.routers.usershub.entrypoints=websecure"
+      - "traefik.http.routers.geonature-frontend.entrypoints=web"
+      # - "traefik.http.routers.usershub.tls.certResolver=acme-resolver"
       - "traefik.http.services.usershub.loadbalancer.server.port=5001"
     networks:
       - gn
