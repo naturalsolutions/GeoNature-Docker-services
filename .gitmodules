@@ -18,3 +18,6 @@
 	path = sources/protocoles_monitoring/protocole_foret
 	url = https://gitlab.com/natural-solutions/geonature/onf/protocoles_monitoring/protocole_foret_cc.git
 	branch = develop
+[submodule "sources/gn_module_monitoring"]
+	url = https://gitlab.com/natural-solutions/geonature/onf/gn_module_monitoring.git
+	branch = develop-onf
