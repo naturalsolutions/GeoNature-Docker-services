@@ -34,5 +34,5 @@ COPY --from=build-monitoring /build/dist/*.whl .
 
 FROM base_env AS prod-extra
 RUN --mount=type=cache,target=/root/.cache \
-    pip install *.whl sentry_sdk[flask]
+    pip install --no-cache-dir --force-reinstall *.whl sentry_sdk[flask]
 RUN rm -f *.whl
