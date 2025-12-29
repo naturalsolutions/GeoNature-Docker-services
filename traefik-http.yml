@@ -1,0 +1,32 @@
+services:
+  traefik:
+    command:
+      - "--entrypoints.dashboard.address=:8080"
+      - "-accesslog=${TRAEFIK_ACTIVATE_ACCESS_LOG}"
+      - "--entrypoints.dashboard.http.tls=true"
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+
+  geonature-backend:
+    labels: !reset
+      - "traefik.enable=true"
+      - "traefik.http.routers.geonature-backend.rule=Host(`${GEONATURE_BACKEND_HOST}`) && PathPrefix(`${GEONATURE_BACKEND_PREFIX}`)"
+      - "traefik.http.routers.geonature-backend.entrypoints=web"
+      - "traefik.http.services.geonature-backend.loadbalancer.server.port=8000"
+
+  geonature-frontend:
+    labels: !reset
+      - "traefik.enable=true"
+      - "traefik.http.routers.geonature.rule=Host(`${GEONATURE_FRONTEND_HOST}`) && PathPrefix(`${GEONATURE_FRONTEND_PREFIX}`)"
+      - "traefik.http.routers.geonature.entrypoints=web"
+      - "traefik.http.services.geonature.loadbalancer.server.port=80"
+
+  usershub:
+    labels: !reset
+      - "traefik.enable=true"
+      - "traefik.http.routers.usershub.rule=Host(`${USERSHUB_HOST}`) && PathPrefix(`${USERSHUB_PREFIX}`)"
+      - "traefik.http.routers.usershub.entrypoints=web"
+      - "traefik.http.services.usershub.loadbalancer.server.port=5001"
