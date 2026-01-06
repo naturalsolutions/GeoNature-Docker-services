@@ -88,6 +88,7 @@ services:
     user: ${DOCKER_UID}:${DOCKER_GID}
     profiles:
       - db
+      - db-nopostgres
     command: "geonature permissions supergrant --yes ${GEONATURE_SUPERGRANT_ARGS:---help}"
     volumes:
       - ${GEONATURE_CONFIG_DIR:-./config}/geonature:/dist/config
@@ -172,7 +173,7 @@ services:
 
 volumes:
   redis:
-  postgres:
+  # postgres:
 networks:
   gn:
     name: "${NETWORK_NAME:-geonature_network}"
