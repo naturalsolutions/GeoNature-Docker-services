@@ -20,8 +20,14 @@ build_images:
 	build/build.sh
 
 dev: dev_init
-	COMPOSE_FILE=essential.yml:traefik.yml:dev.yml docker compose up -d --force-recreate
+	COMPOSE_FILE=essential.yml:traefik-http.yml:dev.yml docker compose up -d --force-recreate
 	source .env; echo "Services de developpement lancés, vous pouvez y acceder sur : $${BASE_PROTOCOL}://$${HOSTPORT}$${GEONATURE_FRONTEND_PREFIX}"
+
+dev_start:
+    COMPOSE_FILE=essential.yml:traefik-http.yml:dev.yml docker compose start
+ 
+dev_compose:
+    COMPOSE_FILE=essential.yml:traefik-http.yml:dev.yml docker compose $(CMD)
 
 prod:
 	./init-config.sh
