@@ -21,12 +21,12 @@ build_images:
 
 dev: dev_init
 	COMPOSE_FILE=essential.yml:traefik.yml:dev.yml docker compose up -d --force-recreate
-	source .env; echo "Services de developpement lancés, vous pouvez y acceder sur : https://$${HOSTPORT}$${GEONATURE_FRONTEND_PREFIX}"
+	source .env; echo "Services de developpement lancés, vous pouvez y acceder sur : $${BASE_PROTOCOL}://$${HOSTPORT}$${GEONATURE_FRONTEND_PREFIX}"
 
 prod:
 	./init-config.sh
 	docker compose up -d
-	source .env; echo "Services de production lancés, vous pouvez y acceder sur : https://$${HOSTPORT}$${GEONATURE_FRONTEND_PREFIX}"
+	source .env; echo "Services de production lancés, vous pouvez y acceder sur : $${BASE_PROTOCOL}://$${HOSTPORT}$${GEONATURE_FRONTEND_PREFIX}"
 
 lint_frontend:
 	docker compose exec geonature-frontend bash -c "cd /sources/GeoNature/frontend; npm run format"
