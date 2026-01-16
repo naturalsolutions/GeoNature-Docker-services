@@ -173,7 +173,6 @@ services:
 
 volumes:
   redis:
-  # postgres:
 networks:
   gn:
     name: "${NETWORK_NAME:-geonature_network}"
