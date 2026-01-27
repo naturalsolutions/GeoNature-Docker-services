@@ -7,7 +7,7 @@
     - [Repartir de zero en cas d'erreurs submodules](#repartir-de-zero-en-cas-derreurs-submodules)
   - [2) Makefile pour dev](#2-makefile-pour-dev)
   - [3) Préparer le `.env`](#3-préparer-le-env)
-  - [4) Initialiser config + frontend](#4-initialiser-config--frontend)
+  - [4) Initialiser config](#4-initialiser-config)
   - [5) Build et lancement](#5-build-et-lancement)
   - [6) Accès](#6-accès)
 - [Déploiement en prod](#déploiement-en-prod)
@@ -129,7 +129,11 @@ build_dev:
 	COMPOSE_FILE=essential.yml:traefik-http.yml:dev.yml docker compose build base-backend base-frontend-source
 	COMPOSE_FILE=essential.yml:traefik-http.yml:dev.yml docker compose build
 
-dev_up: dev_init
+init_config:
+	jq '.projects.geonature.architect.build.configurations.development += {"baseHref": "/geonature/"}' sources/GeoNature/frontend/angular.json > angular.json.tmp && mv angular.json.tmp sources/GeoNature/frontend/angular.json # Pas une super pratique mais pas d'autre solution pour le moment
+	source .env; echo "{\"API_ENDPOINT\":\"//$${GEONATURE_BACKEND_HOSTPORT}$${GEONATURE_BACKEND_PREFIX}\"}" > sources/GeoNature/frontend/src/assets/config.json
+
+dev_up: init_config
 	COMPOSE_FILE=essential.yml:traefik-http.yml:dev.yml docker compose up -d --force-recreate
 ```
 
@@ -153,18 +157,18 @@ Variantes utiles :
 - Base pre-build : `COMPOSE_PROFILES=pre-built-db,usershub` et `POSTGRES_HOST=geonature-pre-built-db`.
 - Base externe : `COMPOSE_PROFILES=db-nopostgres,usershub` et `POSTGRES_HOST=<hote externe>`.
 
-### 4) Initialiser config + frontend
+### 4) Initialiser config
 
-Cette étape lit le `.env` et prépare les fichiers :
+Cette étape construit les fichiers de config avec les bon droits user :
 ```bash
-make dev_init
+sudo ./init_config.sh
 ```
 
 ### 5) Build et lancement
 
 ```bash
 make build_dev
-make dev
+make dev_up
 ```
 
 Si besoin de forcer un redémarrage :
@@ -255,6 +259,6 @@ docker compose logs -f geonature-install-db
 
 URL d'acces (à adapter en fonction de l'où on appelle cette url) :
 ```
-${BASE_PROTOCOL}://${HOST}:${HTTP_PORT}${GEONATURE_FRONTEND_PREFIX}
+${GEONATURE_FRONTEND_PROTOCOL}://${GEONATURE_FRONTEND_HOSTPORT}${GEONATURE_FRONTEND_PREFIX}
 ```
-Exemple : `http://hostname:8082/geonature`.
+Exemple : `https://hostname/geonature`.
