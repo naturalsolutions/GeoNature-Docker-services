@@ -211,7 +211,10 @@ Points importants pour que la stack demarre :
 ### 3) Initialiser les fichiers de config
 
 ```bash
-./init-config.sh
+# Run as root so ownership/permissions are applied on host volumes
+sudo ./init-config.sh
+# Ensure DOCKER_GID is a shared maintainer group (example for ONF : ns_geonature),
+# and maintainer users belong to that group (umask 002 recommended)
 ```
 
 ### 4) Se connecter au registry (si privé)
