@@ -1,4 +1,6 @@
 .env*
+!.env.sample.development
+!.env.sample.prod
 docker-compose.override.yml
 config*
 data*
