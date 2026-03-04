@@ -72,10 +72,26 @@ services:
   geonature-worker:
     image: ${GEONATURE_BACKEND_EXTRA_IMAGE:-ghcr.io/pnx-si/geonature-backend-extra:2.16.2}
     user: ${DOCKER_UID}:${DOCKER_GID}
+    init: true
     environment:
       <<: *backend-env
     entrypoint: []
-    command: celery -A geonature.celery_app:app worker --beat --schedule-filename=/dist/media/celerybeat-schedule.db
+    command: celery -A geonature.celery_app:app worker --loglevel=${GEONATURE_WORKER_LOG_LEVEL:-INFO}
+    volumes:
+      - ${GEONATURE_CONFIG_DIR:-./config}/geonature:/dist/config
+      - ${GEONATURE_DATA_DIR:-./data}/geonature/media:${GEONATURE_MEDIA_FOLDER:-/dist/media}
+      - ${GEONATURE_DATA_DIR:-./data}/geonature/custom:${GEONATURE_CUSTOM_STATIC_FOLDER:-/dist/custom}
+    networks:
+      - gn
+
+  geonature-beat:
+    image: ${GEONATURE_BACKEND_EXTRA_IMAGE:-ghcr.io/pnx-si/geonature-backend-extra:2.16.2}
+    user: ${DOCKER_UID}:${DOCKER_GID}
+    init: true
+    environment:
+      <<: *backend-env
+    entrypoint: []
+    command: celery -A geonature.celery_app:app beat --loglevel=${GEONATURE_BEAT_LOG_LEVEL:-INFO} --schedule=/dist/media/celerybeat-schedule.db
     volumes:
       - ${GEONATURE_CONFIG_DIR:-./config}/geonature:/dist/config
       - ${GEONATURE_DATA_DIR:-./data}/geonature/media:${GEONATURE_MEDIA_FOLDER:-/dist/media}

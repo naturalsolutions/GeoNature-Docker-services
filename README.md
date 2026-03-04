@@ -60,6 +60,7 @@ Pour n'afficher les logs que d'un service en particulier, on utilise la commande
 - `geonature-backend` : l’API de GeoNature
 - `geonature-frontend` : l’interface web de GeoNature
 - `geonature-worker` : exécution de certaines tâches de GeoNature en arrière-plan (import, export, mail, etc...)
+- `geonature-beat` : planification des tâches périodiques Celery Beat
 - `redis` : service de communication entre le worker et le backend
 - `traefik` : serveur web redirigeant les requêtes vers le bon service
 
@@ -68,6 +69,7 @@ SERVICE              PORTS
 geonature-backend    8000/tcp
 geonature-frontend   80/tcp
 geonature-worker     8000/tcp
+geonature-beat       8000/tcp
 postgres             0.0.0.0:5435->5432/tcp, :::5435->5432/tcp
 redis                6379/tcp
 traefik              0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:80->80/tcp, [::]:443->443/tcp
